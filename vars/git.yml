@@ -1,0 +1,6 @@
+---
+
+git_repos:
+  - uri: https://github.com/renfyn/proxy-cloudformation.git
+    dest: "/mnt/c/Users/ChristopheGARCIA/Documents/code/test"
+    version: master

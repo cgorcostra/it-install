@@ -1,0 +1,54 @@
+---
+repos:
+  - name: docker
+    type: "stable"
+    key: https://download.docker.com/linux/ubuntu/gpg
+    uri: https://download.docker.com/linux/ubuntu
+
+
+deb:
+  - uri: https://go.microsoft.com/fwlink/?LinkID=760868
+    name: vsc
+
+rm_packages:
+  - docker.io 
+  - docker-compose 
+  - docker-compose-v2 
+  - docker-doc 
+  - podman-docker 
+  - containerd 
+  - runc
+
+install_packages:
+  - name: wget
+    state: latest
+  - name: curl
+    state: latest
+  - name: gedit
+    state: latest
+  - name: docker-ce
+    state: present
+  - name: docker-ce-cli
+    state: present
+  - name: containerd.io
+    state: present
+  - name: docker-buildx-plugin
+    state: present
+  - name: docker-compose-plugin
+    state: present
+  - name: git
+    state: present
+  - name: vim
+    state: latest
+  - name: gnome-text-editor
+    state: latest
+  - name: gedit
+    state: latest
+  - name: apt-transport-https
+    state: latest
+  - name: ca-certificates
+    state: latest
+  - name: gnupg
+    state: latest
+  - name: lsb-release
+    state: latest

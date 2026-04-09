@@ -1,0 +1,23 @@
+---
+- name: Update apt cache
+  apt:
+    update_cache: yes
+
+- name: Create GPG key directory
+  file:
+    path: /etc/apt/keyrings
+    state: directory
+    mode: "0755"
+
+- name: Download {{ pack.name }}'s official GPG key
+  get_url:
+    url: "{{ pack.key }}"
+    dest: "/etc/apt/keyrings/{{ pack.name }}.asc"
+    mode: "0644"
+
+- name: Add {{ pack.name }} repository to Apt sources
+  apt_repository:
+    repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/{{ pack.name }}.asc] {{ pack.uri }}  {{ ansible_distribution_release }} {{ pack.type }}"
+    state: present
+    filename: "{{ pack.name }}"
+    update_cache: true

@@ -1,0 +1,40 @@
+---
+- hosts: all
+  name: "manage wsl local"
+  become: true
+  become_user: root
+  vars_files:
+    - ../vars/packages.yml
+    - ../vars/spec_packages.yml
+
+  tasks:
+  - name: "update"
+    apt:
+      update_cache: yes
+
+  - name: "package to remove"
+    apt:
+      name: "{{ item }}"
+      state: absent
+    loop: "{{ rm_packages }}"
+    when: "rm_packages is defined"
+
+  - name: "package"
+    apt:
+      name: "{{ item.name }}"
+      state: "{{ item.state }}"
+    loop: "{{install_packages + spec_packages }}"
+
+  - name: "install dist deb"
+    apt:
+      deb: "{{ item.uri }}"
+    loop: "{{ deb }}"
+
+  - name: "upgrade"
+    apt:
+      upgrade: yes
+
+  - name: Remove dependencies that are no longer required
+    apt:
+      autoremove: yes
+      clean: yes

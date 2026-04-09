@@ -1,0 +1,14 @@
+---
+dirs:
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/php"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/python"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/terraform"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/test"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/tmp"
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/docker"
+
+files:
+  - path: "/mnt/c/Users/ChristopheGARCIA/Documents/code/docker/.dockerignore"
+    content: "## Docker Ignore"
+    state: touch

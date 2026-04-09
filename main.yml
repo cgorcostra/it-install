@@ -1,0 +1,8 @@
+---
+- import_playbook: ./playbooks/user.yml
+- import_playbook: ./playbooks/files.yml
+- import_playbook: ./playbooks/dependency.yml
+- import_playbook: ./playbooks/packages.yml
+- import_playbook: ./playbooks/display.yml
+- import_playbook: ./playbooks/git.yml
+- import_playbook: ./playbooks/docker.yml

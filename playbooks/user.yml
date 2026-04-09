@@ -1,0 +1,23 @@
+- hosts: all
+  name: "manage wsl local"
+
+  tasks:
+
+  - name: user ssh key
+    user:
+      name: "{{ lookup('env','USER') }}"
+      state: present
+      generate_ssh_key: true
+    register: current_user
+
+  - name: root authorize key
+    authorized_key:
+      user: "root"
+      state: present
+      key: "{{ current_user.ssh_public_key }}"
+    become: true
+    become_user: root
+
+  - set_fact:
+      current_user:
+        public_key: "{{ current_user.ssh_public_key }}"

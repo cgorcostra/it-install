@@ -1,0 +1,28 @@
+---
+- hosts: all
+  name: "manage git repos local"
+  become: true
+  vars_files:
+    - ../vars/files.yml
+
+  tasks:
+    - name: "create required directory"
+      file:
+        path: "{{ item }}"
+        state: directory
+        mode: "755"
+      loop: "{{dirs}}"
+
+    - name: "create required files"
+      file:
+        path: "{{ item.path }}"
+        state: "{{ item.state }}"
+        mode: "755"
+      loop: "{{ files }}"
+
+    - name: "put files content"
+      lineinfile:
+        path: "{{ item.path }}"        
+        line: "{{ item.content }}"
+      loop: "{{ files }}"
+      

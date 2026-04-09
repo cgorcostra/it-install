@@ -1,0 +1,94 @@
+---
+- hosts: all
+  name: "manage git repos local"
+  become: true
+  vars_files:
+    - ../vars/git.yml
+  vars_prompt:
+
+    - name: setup_key
+      prompt: "configure your SSH in git and enter 'yes'"
+      private: false
+
+    - name: git_username
+      prompt: "enter git user name"
+      private: false
+
+    - name: git_email
+      prompt: "enter git user email"
+      private: false
+
+  tasks:
+    - name: install git repos
+      git:
+        repo: "{{ item.uri }}"
+        dest: "{{ item.dest }}"
+        version: "{{ item.version }}"
+      loop: "{{ git_repos }}"
+      failed_when: setup_key != "yes"
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: alias.cm
+        scope: global
+        value: commit
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: alias.st
+        scope: global
+        value: status
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: alias.co
+        scope: global
+        value: checkout
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: alias.br
+        scope: global
+        value: branch
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: core.editor
+        scope: global
+        value: vim
+
+    - name: Add a setting system-wide
+      community.general.git_config:
+        name: alias.remotev
+        scope: system
+        value: remote -v
+
+    - name: Add a setting to a system scope (default)
+      community.general.git_config:
+        name: alias.diffc
+        value: diff --cached
+
+    - name: Add a setting to a system scope (default)
+      community.general.git_config:
+        name: color.ui
+        value: auto
+
+    - name: set up user name
+      community.general.git_config:
+        name: user.name
+        scope: global
+        value: "{{ git_username }}"
+
+    - name: set up user email
+      community.general.git_config:
+        name: user.email
+        scope: global
+        value: "{{ git_email }}"
+
+    - name: Ignore CHMOD
+      community.general.git_config:
+        name: core.fileMode
+        repo: "{{ item.dest }}"
+        scope: local
+        value: false
+      loop: "{{ git_repos }}"

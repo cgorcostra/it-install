@@ -1,0 +1,14 @@
+---
+- name: Install using official repo
+  hosts: all
+  become: true
+  vars_files:
+    - ../vars/packages.yml
+    - ../vars/spec_packages.yml
+
+  tasks:
+  - name: "load key's and repos"
+    include_tasks: ./tasks/repos.yml
+    loop: "{{repos + spec_repos}}"
+    loop_control:
+      loop_var: pack

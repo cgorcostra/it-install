@@ -1,0 +1,28 @@
+---
+- name: Install using official repo
+  hosts: all
+  vars_files:
+    - ../vars/container.yml
+    - ../vars/spec_packages.yml
+  tasks:
+    - name: Ensure group "docker" exists
+      group:
+        name: docker
+        state: present
+      become: true
+
+    - name: set user {{ lookup('env','USER') }} to docker group
+      user: 
+        name: "{{ lookup('env','USER') }}"
+        groups: docker
+        append: true
+      become: true
+
+    - name: pull needed containers
+      community.docker.docker_image_pull:
+        name: "{{ image }}"
+        platform: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
+      loop: "{{ docker_images + spec_images }}"
+      loop_control:
+        loop_var: "image"
+      become: true
