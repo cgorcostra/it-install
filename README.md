@@ -27,4 +27,5 @@ sh install.sh
 Follow instructions ans take care to prompts
 
 ![plot](./assets/password.png)
+  
 ![plot](./assets/git.png)
