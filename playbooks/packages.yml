@@ -5,7 +5,7 @@
   become_user: root
   vars_files:
     - ../vars/packages.yml
-    - ../vars/spec_packages.yml
+    - ../vars/spec_vars.yml
 
   tasks:
   - name: "update"
@@ -23,7 +23,7 @@
     apt:
       name: "{{ item.name }}"
       state: "{{ item.state }}"
-    loop: "{{install_packages + spec_packages }}"
+    loop: "{{install_packages + spec_packages if spec_packages is defined else install_packages}}"
 
   - name: "install dist deb"
     apt:

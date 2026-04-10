@@ -17,7 +17,7 @@
 
 - name: Add {{ pack.name }} repository to Apt sources
   apt_repository:
-    repo: "deb [arch={{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }} signed-by=/etc/apt/keyrings/{{ pack.name }}.asc] {{ pack.uri }}  {{ ansible_distribution_release }} {{ pack.type }}"
+    repo: "deb [arch={{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }} signed-by=/etc/apt/keyrings/{{ pack.name }}.asc] {{ pack.uri }}  {{ ansible_facts['distribution_release'] }} {{ pack.type }}"
     state: present
     filename: "{{ pack.name }}"
     update_cache: true

@@ -3,7 +3,9 @@
   hosts: all
   vars_files:
     - ../vars/container.yml
-    - ../vars/spec_packages.yml
+    - ../vars/spec_vars.yml
+  vars:
+    all_gocker_images: "{{ docker_images + spec_images if spec_images is defined else docker_images }}"
   tasks:
     - name: Ensure group "docker" exists
       group:
@@ -11,9 +13,9 @@
         state: present
       become: true
 
-    - name: set user {{ lookup('env','USER') }} to docker group
+    - name: set user {{ ansible_facts['env']['LOGNAME'] }} to docker group
       user: 
-        name: "{{ lookup('env','USER') }}"
+        name: "{{ ansible_facts['env']['LOGNAME'] }}"
         groups: docker
         append: true
       become: true
@@ -21,8 +23,8 @@
     - name: pull needed containers
       community.docker.docker_image_pull:
         name: "{{ image }}"
-        platform: "{{ 'amd64' if ansible_architecture == 'x86_64' else ansible_architecture }}"
-      loop: "{{ docker_images + spec_images }}"
+        platform: "{{ 'amd64' if ansible_facts['architecture'] == 'x86_64' else ansible_facts['architecture'] }}"
+      loop: "{{ all_gocker_images }}"
       loop_control:
         loop_var: "image"
       become: true

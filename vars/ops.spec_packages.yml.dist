@@ -1,37 +1,37 @@
-spec_packages:
-  - name: packer
-    state: present
-  - name: make
-    state: latest
-  - name: terraform
-    state: present
-  - name: ansible
-    state: present
-
-spec_repos:
-  - name: hashicorp
-    type: "main"
-    key: https://apt.releases.hashicorp.com/gpg
-    uri: https://apt.releases.hashicorp.com
-  - name: azure-cli
-    type: "main"
-    key: https://packages.microsoft.com/keys/microsoft.asc
-    uri: https://packages.microsoft.com/repos/azure-cli/
-
-spec_images:
-  - php:latest
-
-
-spec_git_repos:
-  - uri: https://github.com/renfyn/CrocCroc.git
-    dest: "/mnt/c/Users/ChristopheGARCIA/Documents/code/php"
-    version: master
-
-spec_dirs:
-  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/loop"
-
-
-spec_files:
-  - path: "/mnt/c/Users/ChristopheGARCIA/Documents/code/docker/.gitignore"
-    content: "## git Ignore"
-    state: touch
+#spec_packages:
+#  - name: packer
+#    state: present
+#  - name: make
+#    state: latest
+#  - name: terraform
+#    state: present
+#  - name: ansible
+#    state: present
+#
+#spec_repos:
+#  - name: hashicorp
+#    type: "main"
+#    key: https://apt.releases.hashicorp.com/gpg
+#    uri: https://apt.releases.hashicorp.com
+#  - name: azure-cli
+#    type: "main"
+#    key: https://packages.microsoft.com/keys/microsoft.asc
+#    uri: https://packages.microsoft.com/repos/azure-cli/
+#
+#spec_images:
+#  - php:latest
+#
+#
+#spec_git_repos:
+#  - uri: https://github.com/renfyn/CrocCroc.git
+#    dest: "/mnt/c/Users/ChristopheGARCIA/Documents/code/php"
+#    version: master
+#
+#spec_dirs:
+#  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/loop"
+#
+#
+#spec_files:
+#  - path: "/mnt/c/Users/ChristopheGARCIA/Documents/code/docker/.gitignore"
+#    content: "## git Ignore"
+#    state: touch

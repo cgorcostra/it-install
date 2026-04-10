@@ -15,7 +15,7 @@ In WPS Ubuntu's terminal, go to cloned directory.
 set your profile dev or ops
   
 ```bash
-cp ./vars/<dev or ops>.spec_packages.yml.dist spec_packages.yml
+cp ./vars/<dev or ops>.spec_vars.yml.dist spec_vars.yml
 ```
 complete your needs packages or repositories
 

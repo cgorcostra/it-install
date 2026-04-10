@@ -4,26 +4,33 @@
   become: true
   vars_files:
     - ../vars/files.yml
-    - ../vars/spec_packages.yml
+    - ../vars/spec_vars.yml
+  vars:
+    all_dirs: "{{ dirs + spec_dirs if spec_dirs is defined else dirs }}"
+    all_files: "{{ files + spec_files if spec_files is defined else files }}"
 
   tasks:
     - name: "create required directory"
       file:
         path: "{{ item }}"
         state: directory
+        owner: "{{ ansible_facts['env']['LOGNAME'] }}"
+        group: "{{ ansible_facts['env']['LOGNAME'] }}"
         mode: "755"
-      loop: "{{dirs + spec_dirs}}"
+      loop: "{{all_dirs}}"
 
     - name: "create required files"
       file:
         path: "{{ item.path }}"
         state: "{{ item.state }}"
-        mode: "755"
-      loop: "{{ files + spec_files }}"
+        owner: "{{ ansible_facts['env']['LOGNAME'] }}"
+        group: "{{ ansible_facts['env']['LOGNAME'] }}"
+        mode: "775"
+      loop: "{{ all_files }}"
 
     - name: "put files content"
       lineinfile:
         path: "{{ item.path }}"        
         line: "{{ item.content }}"
-      loop: "{{ files + spec_files }}"
+      loop: "{{ all_files }}"
       

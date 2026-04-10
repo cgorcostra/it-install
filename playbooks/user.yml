@@ -3,21 +3,38 @@
 
   tasks:
 
+  - name: Check that the id_rsa exists
+    stat:
+      path: "{{ ansible_facts['env']['HOME'] }}/.ssh/id_rsa"
+    register: stat_result
+
   - name: user ssh key
     user:
-      name: "{{ lookup('env','USER') }}"
+      name: "{{ ansible_facts['env']['LOGNAME'] }}"
       state: present
       generate_ssh_key: true
     register: current_user
+    when: not stat_result.stat.exists
 
   - name: root authorize key
     authorized_key:
-      user: "root"
+      user: root
       state: present
       key: "{{ current_user.ssh_public_key }}"
+    when: current_user.changed == true  or current_user.skipped is undefined
     become: true
-    become_user: root
+    become_user: root 
+
+  - name: Evaluating the authentication agent & adding the key...
+    shell: |
+        eval "$(ssh-agent)"
+        ssh-add ~/.ssh/id_rsa
+    when: current_user.changed == true or current_user.skipped is undefined
 
   - set_fact:
       current_user:
-        public_key: "{{ current_user.ssh_public_key }}"
+        public_key: "{{ current_user.ssh_public_key if current_user.ssh_public_key is defined else '' }}"
+        changed: "{{ current_user.changed }}"
+        skipped: "{{ current_user.skipped is defined }}"
+  
+  - 

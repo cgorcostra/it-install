@@ -1,0 +1,40 @@
+---
+- name: Set up WSL
+  hosts: all 
+  tasks:
+
+
+    - debug:
+        msg: "test your become password"
+
+    - command: cat /etc/hosts
+      register: cmd
+      ignore_errors: yes
+      become: true
+
+    - debug:
+        msg: "Wrong password. Stop processing"
+      when: cmd.failed == true
+      failed_when: cmd.failed == true
+
+    - debug:
+        msg: "Right password. Processing"
+      when: cmd.failed == false
+
+    - name: Check that the spec_vars.yml exists
+      stat:
+        path: "../vars/spec_vars.yml"
+      register: stat_result
+
+    - debug:
+        var: stat_result 
+
+    - name: "create empty spec_vars.yml"
+      file:
+        path: ../vars/spec_vars.yml
+        state: touch
+        owner: "{{ ansible_facts['env']['LOGNAME'] }}"
+        group: "{{ ansible_facts['env']['LOGNAME'] }}"
+        mode: "775"
+      when: not stat_result.stat.exists
+      become: true

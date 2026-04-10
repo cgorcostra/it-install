@@ -1,4 +1,6 @@
 ---
+
+- import_playbook: ./playbooks/precheck.yml
 - import_playbook: ./playbooks/user.yml
 - import_playbook: ./playbooks/files.yml
 - import_playbook: ./playbooks/dependency.yml

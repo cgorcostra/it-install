@@ -4,11 +4,11 @@
   become: true
   vars_files:
     - ../vars/packages.yml
-    - ../vars/spec_packages.yml
+    - ../vars/spec_vars.yml
 
   tasks:
   - name: "load key's and repos"
     include_tasks: ./tasks/repos.yml
-    loop: "{{repos + spec_repos}}"
+    loop: "{{repos + spec_repos if spec_repos is defined else repos }}"
     loop_control:
       loop_var: pack

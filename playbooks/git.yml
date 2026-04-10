@@ -1,37 +1,62 @@
 ---
 - hosts: all
   name: "manage git repos local"
-  become: true
   vars_files:
     - ../vars/git.yml
-  vars_prompt:
-
-    - name: setup_key
-      prompt: "configure your SSH in git and enter 'yes'"
-      private: false
-
-    - name: git_username
-      prompt: "enter git user name"
-      private: false
-
-    - name: git_email
-      prompt: "enter git user email"
-      private: false
-
+    - ../vars/spec_vars.yml
+  vars:
+    all_git_repos: "{{ git_repos + spec_git_repos if spec_git_repos is defined else git_repos }}"
   tasks:
+
+    - pause:
+        prompt: "configure your SSH in git and enter 'yes'"
+        echo: true
+      register: setup_key
+      when: current_user.changed == true and current_user.skipped  == false
+
+    - pause:
+        prompt: "enter git user name"
+        echo: true
+      register: git_username
+      when: current_user.changed == true and current_user.skipped  == false
+
+    - pause:
+        prompt: "enter git user email"
+        echo: true
+      register: git_email
+      when: current_user.changed == true and current_user.skipped == false
+
     - name: install git repos
       git:
         repo: "{{ item.uri }}"
         dest: "{{ item.dest }}"
         version: "{{ item.version }}"
-      loop: "{{ git_repos }}"
-      failed_when: setup_key != "yes"
+      loop: "{{ all_git_repos }}"
+      become: true
+      when: (setup_key.user_input  is defined and setup_key.user_input == "yes") or (setup_key.skipped is defined)
+  
+    - name: set up rigths
+      file:        
+        path: "{{ item.dest }}"
+        recurse: true
+        owner: "{{ ansible_facts['env']['LOGNAME'] }}"
+        group: "{{ ansible_facts['env']['LOGNAME'] }}"
+        mode: "775"
+      loop: "{{ all_git_repos }}"
+      become: true
+      when: (setup_key.user_input  is defined and setup_key.user_input == "yes") or (setup_key.skipped is defined)
+
+    - name: Add a setting to ~/.gitconfig
+      community.general.git_config:
+        name: alias.ci
+        scope: global
+        value: commit
 
     - name: Add a setting to ~/.gitconfig
       community.general.git_config:
         name: alias.cm
         scope: global
-        value: commit
+        value: commit -m
 
     - name: Add a setting to ~/.gitconfig
       community.general.git_config:
@@ -60,35 +85,37 @@
     - name: Add a setting system-wide
       community.general.git_config:
         name: alias.remotev
-        scope: system
+        scope: global
         value: remote -v
 
     - name: Add a setting to a system scope (default)
       community.general.git_config:
         name: alias.diffc
         value: diff --cached
+      become: true
 
     - name: Add a setting to a system scope (default)
       community.general.git_config:
         name: color.ui
         value: auto
-
+      become: true
+      
     - name: set up user name
       community.general.git_config:
         name: user.name
         scope: global
-        value: "{{ git_username }}"
+        value: "{{ git_username.user_input }}"
+      when: git_username.user_input is defined
 
     - name: set up user email
       community.general.git_config:
         name: user.email
         scope: global
-        value: "{{ git_email }}"
+        value: "{{ git_email.user_input }}"
+      when: git_email.user_input is defined
 
     - name: Ignore CHMOD
       community.general.git_config:
         name: core.fileMode
-        repo: "{{ item.dest }}"
-        scope: local
+        scope: global
         value: false
-      loop: "{{ git_repos }}"
