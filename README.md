@@ -20,7 +20,7 @@ cp ./vars/<dev or ops>.spec_packages.yml.dist spec_packages.yml
 complete your needs packages or repositories
 
 ```bash
-cd /mnt/c/<your path>
+cd /mnt/c/<your path>-
 sh install.sh
 ```
   

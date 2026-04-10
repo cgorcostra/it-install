@@ -4,6 +4,7 @@
   become: true
   vars_files:
     - ../vars/files.yml
+    - ../vars/spec_packages.yml
 
   tasks:
     - name: "create required directory"
@@ -11,18 +12,18 @@
         path: "{{ item }}"
         state: directory
         mode: "755"
-      loop: "{{dirs}}"
+      loop: "{{dirs + spec_dirs}}"
 
     - name: "create required files"
       file:
         path: "{{ item.path }}"
         state: "{{ item.state }}"
         mode: "755"
-      loop: "{{ files }}"
+      loop: "{{ files + spec_files }}"
 
     - name: "put files content"
       lineinfile:
         path: "{{ item.path }}"        
         line: "{{ item.content }}"
-      loop: "{{ files }}"
+      loop: "{{ files + spec_files }}"
       

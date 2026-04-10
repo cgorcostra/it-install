@@ -26,3 +26,12 @@ spec_git_repos:
   - uri: https://github.com/renfyn/CrocCroc.git
     dest: "/mnt/c/Users/ChristopheGARCIA/Documents/code/php"
     version: master
+
+spec_dirs:
+  - "/mnt/c/Users/ChristopheGARCIA/Documents/code/loop"
+
+
+spec_files:
+  - path: "/mnt/c/Users/ChristopheGARCIA/Documents/code/docker/.gitignore"
+    content: "## git Ignore"
+    state: touch
